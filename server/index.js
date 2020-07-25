@@ -3,6 +3,7 @@ const { db } = require('../db');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
+const { apiKey } = require('../config/sendgrid');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sessionStore = new SequelizeStore({ db });
 const app = express();
@@ -25,7 +26,7 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || 'my best friend is Cody',
+    secret: process.env.SESSION_SECRET || 'simon data is cool',
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
@@ -38,6 +39,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 //Endpoint Handlers
 app.use('/auth', require('./auth'));
+app.use('/api', require('./api'));
 
 //Serve Up React App
 app.use('*', (req, res) => {
