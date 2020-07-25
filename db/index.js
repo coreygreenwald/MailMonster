@@ -1,7 +1,8 @@
 const db = require('./_db');
-const { User } = require('./models');
+const { User, Template } = require('./models');
 
 module.exports = {
   db,
-  User
+  User,
+  Template
 }
