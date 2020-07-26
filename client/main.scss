@@ -3,3 +3,22 @@ $body-color: red;
 body {
   color: $body-color;
 }
+
+.template {
+  &-container {
+    display: flex;
+    flex-direction: row;
+    &-mini {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+
+      &-border {
+        border: 3px solid black;
+        margin: 10px;
+        width: 75%;
+        height: auto;
+      }
+    }
+  }
+}

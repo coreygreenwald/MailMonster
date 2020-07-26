@@ -10,12 +10,12 @@ describe('Template model', () => {
   describe('hooks', () => {
     describe('setDefaultName', () => {
       let template;
-      let text =
+      let html =
         'Hi {{contact_first_name}}, Good news! You can get {{discount_rate}} off your next pair of shoes by using this discount code: {{discount_code}}.';
 
       beforeEach(async () => {
         template = await Template.create({
-          text
+          html
         });
       });
 
@@ -24,7 +24,7 @@ describe('Template model', () => {
       });
 
       it('Expects template name to be set to the first 15 characters of the string.', () => {
-        expect(template.name).to.be.equal(text.slice(0, 15) + '...');
+        expect(template.name).to.be.equal(html.slice(0, 15) + '...');
       });
     });
   });

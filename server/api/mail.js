@@ -1,19 +1,23 @@
 const router = require('express').Router();
+const sgMail = require('@sendgrid/mail');
+const apiKey =
+  process.env.SENDGRID_API_KEY || require('../../config/sendgrid').apiKey;
+sgMail.setApiKey(apiKey);
 
-router.get('/', (req, res, next) => {
+router.post('/', (req, res, next) => {
   try {
-    const sgMail = require('@sendgrid/mail');
-    const apiKey = process.env.SENDGRID_API_KEY || require('../../config/sendgrid').apiKey;
-    sgMail.setApiKey(apiKey);
+    console.log('Attempting to send test email');
+    const { html } = req.body;  
+    console.log('HTML received!', html);
     const msg = {
-      to: 'sdatatester@gmail.com',
+      to: 'corey.m.greenwald@gmail.com',
       from: 'sdatatester@gmail.com',
       subject: 'This is a test email!',
       text: 'Being sent with nodejs',
-      html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+      html,
     };
     sgMail.send(msg);
-    res.send('Test Email Sent');
+    res.send('Test Email Sent!');
   } catch(err){
     next(err);
   }

@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const { db } = require('../db');
 const path = require('path');
 const passport = require('passport');
@@ -21,6 +22,8 @@ passport.deserializeUser(async (id, done) => {
 })
 
 //Request Middleware
+app.use(morgan('dev'));
+
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
@@ -46,6 +49,7 @@ app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public/index.html'));
 })
 
+//TODO: ERR handling middleware
 //Startup Server
 db.sync().then(() => {
   app.listen(5000);

@@ -6,13 +6,16 @@ const Template = db.define('template', {
     type: Sequelize.STRING,
     defaultValue: ''
   }, 
-  text: {
+  html: {
     type: Sequelize.TEXT
+  },
+  renderData: {
+    type: Sequelize.JSONB
   }
 });
 
 const setDefaultName = (template) => {
-  if (template.text && !template.name) template.name = template.text.slice(0, 15) + '...';
+  if (template.html && !template.name) template.name = template.html.slice(0, 15) + '...';
 }
 
 Template.beforeCreate(setDefaultName); 
