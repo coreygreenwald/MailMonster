@@ -41,7 +41,6 @@ export default function (state = defaultTemplates, action) {
       return newState;
     case SET_ACTIVE_TEMPLATE:
       newState.activeTemplate = action.template;
-      newState.items = [...newState.items, action.template]
       return newState;
     default:
       return state;

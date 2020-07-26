@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 
 import TemplatePreview from './TemplatePreview'
-import { post } from '../../server/api';
+// import { post } from '../../server/api';
 
 class Campaign extends Component {
   constructor(props) {
@@ -25,15 +25,15 @@ class Campaign extends Component {
     })
   }
 
-  // sendEmail(){
-  //   axios.post('/api/mail', {
-  //     html: this.state.previewHtml,
-  //     to: this.state.to,
-  //     from: this.state.from,
-  //     subject: this.state.subject,
-  //     text: ''
-  //   });
-  // }
+  sendEmail = () => {
+    axios.post('/api/mail', {
+      html: this.state.previewHtml,
+      to: this.state.to,
+      from: this.state.from,
+      subject: this.state.subject,
+      text: ''
+    });
+  }
 
   handleUserVariables = (evt) => {
     const variables = {...this.state.variables};
@@ -85,6 +85,7 @@ class Campaign extends Component {
           <TemplatePreview html={this.state.previewHtml} />
           <div className="campaign-container-controller-inputs">
             <div className="campaign-container-controller-inputs-item">
+              <button onClick={this.sendEmail}>Send Email!</button>
               <label for="to">To:</label>
               <input
                 name="to"

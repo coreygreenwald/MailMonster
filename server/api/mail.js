@@ -6,14 +6,12 @@ sgMail.setApiKey(apiKey);
 
 router.post('/', (req, res, next) => {
   try {
-    console.log('Attempting to send test email');
-    const { html } = req.body;  
-    console.log('HTML received!', html)
+    const { html, to, from, subject } = req.body;  
     const msg = {
-      to: 'sdatatester@gmail.com',
-      from: 'sdatatester@gmail.com',
-      subject: 'This is a test email!',
-      text: 'Being sent with nodejs',
+      to,
+      from,
+      subject,
+      text: ' ',
       html,
     };
     sgMail.send(msg);

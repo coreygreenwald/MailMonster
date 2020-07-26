@@ -48,7 +48,6 @@ class Template extends Component {
                   <Link to="/campaigns">Use in Campaign</Link>
                 ) : null
               }
-              
               {Object.keys(this.state.variables).map((val) => (
                 <div>
                   <h3>{val}</h3>
