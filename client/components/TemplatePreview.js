@@ -1,12 +1,12 @@
 import React, {Component} from 'react'
 
 const TemplatePreview = (props) => {
-  const { template } = props;
+  const { html } = props;
   return (
     <div className="template-preview">
           <div
             className="template-preview-inner"
-            dangerouslySetInnerHTML={{__html: template.html}}
+            dangerouslySetInnerHTML={{__html: html}}
           ></div>
     </div>
   );

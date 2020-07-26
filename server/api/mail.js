@@ -8,9 +8,9 @@ router.post('/', (req, res, next) => {
   try {
     console.log('Attempting to send test email');
     const { html } = req.body;  
-    console.log('HTML received!', html);
+    console.log('HTML received!', html)
     const msg = {
-      to: 'corey.m.greenwald@gmail.com',
+      to: 'sdatatester@gmail.com',
       from: 'sdatatester@gmail.com',
       subject: 'This is a test email!',
       text: 'Being sent with nodejs',
