@@ -2,15 +2,16 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, UserHome, Template} from './components'
-import {me} from './store'
+import {Login, Signup, UserHome, Template, Campaign} from './components'
+import {me, fetchTemplates} from './store';
 
 /**
  * COMPONENT
  */
 class Routes extends Component {
-  componentDidMount() {
-    this.props.loadInitialData()
+  async componentDidMount() {
+    await this.props.loadInitialData();
+    await this.props.fetchTemplates();
   }
 
   render() {
@@ -26,12 +27,13 @@ class Routes extends Component {
             {/* Routes Available to Logged In Users */}
             <Route path="/home" component={UserHome} />
             <Route path="/templates" component={Template} />
+            <Route path="/campaigns" component={Campaign} />
           </Switch>
         )}
         {/* Fallback Component */}
         <Route component={Login} />
       </Switch>
-    )
+    );
   }
 }
 
@@ -44,9 +46,12 @@ const mapState = state => {
 const mapDispatch = dispatch => {
   return {
     loadInitialData() {
-      dispatch(me())
-    }
-  }
+      dispatch(me());
+    },
+    fetchTemplates() {
+      dispatch(fetchTemplates());
+    },
+  };
 }
 
 export default withRouter(connect(mapState, mapDispatch)(Routes))
