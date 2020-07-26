@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 
 import TemplatePreview from './TemplatePreview'
-// import { post } from '../../server/api';
 
 class Campaign extends Component {
   constructor(props) {
@@ -71,6 +70,8 @@ class Campaign extends Component {
           prev[curr] = this.state.variables[curr] || '';
           return prev;
         }, {});
+    } else {
+      variables = {};
     }
     this.setState({
       variables
@@ -78,6 +79,8 @@ class Campaign extends Component {
   };
 
   render() {
+    console.dir(this.props.templates);
+    console.dir(this.state);
     return (
       <div className="campaign-container">
         <h3>Start an Email Campaign</h3>

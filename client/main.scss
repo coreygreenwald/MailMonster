@@ -1,24 +1,88 @@
-$body-color: red;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;1,600&display=swap');
+@import './styles/functions.scss';
+
+$color-solitude: #F5F7F8;
+$color-cerise: #D8276C;
+$color-warn: #aa9f3f;
+$color-success: #59ca63;
+
+$color-red: #f44336;
+$color-white: #FFFFFF;
+$color-gray: #888888;
+$color-black: #000000;
+
+$primary-background-color: $color-solitude;
+$text-color: rgb(66, 66, 66);
+
 
 body {
-  color: $body-color;
+  background-color: $primary-background-color;
+  font-family: "Poppins", sans-serif;
+  color: $text-color;
 }
 
-.template {
-  &-container {
-    display: flex;
-    flex-direction: row;
-    &-mini {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-
-      &-border {
-        border: 3px solid black;
-        margin: 10px;
-        width: 75%;
-        height: auto;
-      }
-    }
+.btn {
+  padding:10px 20px;
+  margin: 2px;
+	display:inline-block;
+	border-radius:3px;
+	background-color: $color-cerise;
+	font-size:16px;
+  color: $color-white;
+  &-disabled {
+    background-color: $color-gray;
   }
 }
+
+.alert {
+  padding: 20px;
+  color: white;
+  border-radius:3px;
+  margin-bottom: 15px;
+  &.error {
+      background-color: $color-red;
+  }
+  &.warn {
+      background-color: $color-warn;
+  }
+  &.success {
+      background-color: $color-success;
+  }
+}
+
+/* The close button */
+.closebtn {
+  margin-left: 15px;
+  color: white;
+  font-weight: bold;
+  float: right;
+  font-size: 22px;
+  line-height: 20px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.label-input {
+  font-size: 24px;
+  margin-right: 5px;
+}
+
+.input { 
+  margin: 5px;
+	border-radius:3px;
+	background-color: $color-white;
+	font-size:24px;
+  color: $color-black;
+  height: 32px;
+  width: 200px;
+  &-disabled {
+    background-color: $color-gray;
+  }
+}
+/* When moving the mouse over the close button */
+.closebtn:hover {
+  color: black;
+}
+
+@import './styles/nav.scss';
+@import './styles/template.scss';

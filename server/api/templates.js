@@ -21,10 +21,9 @@ router.get('/', async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next) => {
-  console.log(req.body);
   try {
     let template;
-    const {id, data, html} = req.body;
+    const {id, data, html, name} = req.body;
     if(req.body.id){
       template = await Template.findOne({where: {
         id,
@@ -32,11 +31,13 @@ router.post('/', async (req, res, next) => {
       }});
       template.renderData = data;
       template.html = html;
+      template.name = name;
       template = await template.save();
     } else {
       template = await Template.create({
         renderData: data,
         html,
+        name,
         userId: req.user.id
       })
     }

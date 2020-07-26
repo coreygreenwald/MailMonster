@@ -7,13 +7,17 @@ import axios from 'axios';
 
 import EmailEditor from 'react-email-editor';
 
+const MIN_TEMPLATE_SIZE = 5970;
+
 class Template extends Component {
   constructor(props){
     super(props);
     this.state = {
       id: null,
       templates: [],
-      variables: {}
+      message: '',
+      messageStatus: 'error', //error / warn / success
+      name: ''
     }
   }
 
@@ -31,33 +35,78 @@ class Template extends Component {
     const { items } = this.props.templates
     return (
       <div className="template">
-        <h1>Template Manager</h1>
-        <p>Build your templates here!</p>
-        <p>
-          Declare variables for your email templates by using{' '}
-          {'{{name_of_variable}}'}
-        </p>
-        <div className="template-container">
-          <div>
-            <div>
-              <button onClick={this.exportDesign}>
-                Save Template
-              </button>
-              {
-                this.props.templates.activeTemplate.hasOwnProperty('id') ? (
-                  <Link to="/campaigns">Use in Campaign</Link>
-                ) : null
-              }
-              {Object.keys(this.state.variables).map((val) => (
-                <div>
-                  <h3>{val}</h3>
-                  <input value={this.state.variables[val]} />
-                </div>
-              ))}
+        <div className="template-instructions">
+          <h2>Customize Your Templates</h2>
+          <p>
+            1. Create an email template using the editor - you can add images,
+            text, buttons, and more!
+          </p>
+          <p>
+            2. Specify areas within your template that will be filled with
+            personalized information by using the syntax
+            {' {{name_of_variable}}'}. You can put these wherever you can write
+            text!
+          </p>
+          <p>
+            3. Make sure you like the desktop and mobile views! When you're
+            ready give this template a name and click save to save this to your
+            account.
+          </p>
+          <p>
+            4. One saved, you can use template now to start a campaign or work
+            on some other drafts and head on over to the{' '}
+            <Link to="/campaigns">campaigns</Link> page later.
+          </p>
+        </div>
+        <div className="template-editor">
+          {this.state.message ? (
+            <div className={'alert ' + this.state.messageStatus}>
+              <span
+                className="closebtn"
+                onClick={() => this.setState({message: ''})}
+              >
+                &times;
+              </span>
+              {this.state.message}
             </div>
+          ) : null}
+          {/* <div>
+            {Object.keys(this.state.variables).map((val) => (
+              <div>
+                <h3>{val}</h3>
+                <input value={this.state.variables[val]} />
+              </div>
+            ))}
+          </div> */}
+          <div className="template-editor-main">
             <EmailEditor ref={(editor) => (this.editor = editor)} />
           </div>
-          {this.props.templates.items.length ? (
+          <div className="template-editor-controls">
+            <div>
+              <label className="label-input" htmlFor="template-name">
+                Name This Template:{' '}
+              </label>
+              <input
+                name="template-name"
+                className="input"
+                value={this.state.name}
+                onChange={(evt) => this.setState({name: evt.target.value})}
+              />
+            </div>
+            <div>
+              <button
+                className={this.state.name ? 'btn' : 'btn btn-disabled'}
+                onClick={this.exportDesign}
+              >
+                Save Template
+              </button>
+              {this.props.templates.activeTemplate.hasOwnProperty('id') ? (
+                <Link to="/campaigns">Use in Campaign</Link>
+              ) : null}
+            </div>
+          </div>
+        </div>
+        {/* {this.props.templates.items.length ? (
             <div>
               {items.map((template) => (
                 <div className="template-container-mini">
@@ -76,23 +125,23 @@ class Template extends Component {
                 </div>
               ))}
             </div>
-          ) : null}
-        </div>
+          ) : null} */}
       </div>
     );
   }
 
   parseHtmlForVariables = (html) => {
-    let variables = html.match(/{{\w+}}/ig);
-    if(variables && variables.length){
-      variables.map(val => val.slice(2, -2)).reduce((prev, curr) => {
-        prev[curr] = '';
-        return prev;
-      }, {});
-      this.setState({
-        variables,
-      });
-    }
+    let userVariables = html.match(/{{\w+}}/ig);
+    return userVariables || [];
+    // if(variables && variables.length){
+    //   variables.map(val => val.slice(2, -2)).reduce((prev, curr) => {
+    //     prev[curr] = '';
+    //     return prev;
+    //   }, {});
+    //   this.setState({
+    //     variables,
+    //   });
+    // }
   }
 
   exportHtml = () => {
@@ -115,13 +164,37 @@ class Template extends Component {
   }
   
   exportDesign = async () => {
+    if(!this.state.name){
+      this.setState({
+        message:  "Please name this template!",
+        messageStatus: 'error'
+      });
+      return;
+    }
     const html = await this.exportHtml();
-    this.parseHtmlForVariables(html);
+    if (html.length < MIN_TEMPLATE_SIZE) {
+      this.setState({
+        message: 'Looks like your template is empty - get creative with your design!',
+      });
+      return;
+    }
     const data = await this.saveDesign();
-    this.props.updateTemplate({
-      id: this.props.templates.activeTemplate.id || null, 
+    await this.props.updateTemplate({
+      id: this.props.templates.activeTemplate.id || null,
+      name: this.state.name,
       html,
       data
+    })
+    const userVariables = this.parseHtmlForVariables(html);
+    let message = 'Template Saved Successfully!'
+    let messageStatus = 'success'
+    if(!userVariables.length){
+      message += '\n Warning - There is no personalizable data associated with this template. You can add some to your template by using {{example_here}} wherever you can place text';
+      messageStatus = 'warn'
+    } 
+    this.setState({
+      message,
+      messageStatus
     })
   }
 

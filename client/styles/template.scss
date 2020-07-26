@@ -1,0 +1,18 @@
+.template {
+  @include flex(row, flex-start, flex-start);
+  padding: 20px;
+
+  &-instructions {
+    @include flex(column, flex-start, flex-start);
+    width: 25%;
+    padding: 10px;
+  }
+  &-editor {
+    width: 75%;
+    padding: 10px;
+    
+    &-controls {
+      @include flex(row, space-between, space-between);
+    }
+  }
+}
