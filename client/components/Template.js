@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {connect} from 'react-redux';
 import {fetchTemplates, updateTemplate} from '../store';
+import history from '../history'
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 
@@ -26,8 +27,8 @@ class Template extends Component {
   }
 
   async componentDidUpdate(){
-    if(this.props.templates.activeTemplate.hasOwnProperty('data')){
-      this.loadDesign(this.props.templates.activeTemplate.data);
+    if(this.props.templates.activeTemplate.hasOwnProperty('renderData')){
+      this.loadDesign(this.props.templates.activeTemplate.renderData);
     }
   }
 
@@ -101,7 +102,10 @@ class Template extends Component {
                 Save Template
               </button>
               {this.props.templates.activeTemplate.hasOwnProperty('id') ? (
-                <Link to="/campaigns">Use in Campaign</Link>
+                <button
+                  className="btn"
+                  onClick={this.handleTransitionToCampaign}
+                >Use In Campaign</button>
               ) : null}
             </div>
           </div>
@@ -128,6 +132,10 @@ class Template extends Component {
           ) : null} */}
       </div>
     );
+  }
+
+  handleTransitionToCampaign = () => {
+    history.push('/campaigns');
   }
 
   parseHtmlForVariables = (html) => {

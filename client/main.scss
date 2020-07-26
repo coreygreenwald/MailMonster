@@ -3,7 +3,7 @@
 
 $color-solitude: #F5F7F8;
 $color-cerise: #D8276C;
-$color-warn: #aa9f3f;
+$color-warn: #f5e12d;
 $color-success: #59ca63;
 
 $color-red: #f44336;
@@ -62,12 +62,12 @@ body {
   transition: 0.3s;
 }
 
-.label-input {
+.label-input, label {
   font-size: 24px;
   margin-right: 5px;
 }
 
-.input { 
+.input, input { 
   margin: 5px;
 	border-radius:3px;
 	background-color: $color-white;
@@ -86,3 +86,4 @@ body {
 
 @import './styles/nav.scss';
 @import './styles/template.scss';
+@import './styles/campaign.scss';
