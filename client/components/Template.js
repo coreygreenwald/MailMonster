@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 
 import EmailEditor from 'react-email-editor';
+import TemplateSelector from './TemplateSelector';
 
 const MIN_TEMPLATE_SIZE = 5970;
 
@@ -123,6 +124,7 @@ class Template extends Component {
                   onClick={this.handleTransitionToCampaign}
                 >Use In Campaign</button>
               ) : null}
+              <TemplateSelector />
             </div>
           </div>
         </div>
@@ -185,6 +187,10 @@ class Template extends Component {
         else reject();
       })
     })
+  }
+
+  clearDesign = () => {
+    this.loadDesign({})
   }
   
   exportDesign = async () => {

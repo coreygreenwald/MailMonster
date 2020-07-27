@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import axios from 'axios';
 import {setActiveTemplate} from '../store';
 import TemplatePreview from './TemplatePreview';
+import TemplateSelector from './TemplateSelector';
 import { expect } from 'chai';
 
 class Campaign extends Component {
@@ -100,16 +101,7 @@ class Campaign extends Component {
       <div className="campaign">
         <div className="campaign-render">
           <div className="campaign-controller-input">
-            <label htmlFor="active-temp">Active Template:</label>
-            <select
-              name="active-temp"
-              onChange={(evt) => this.props.setActiveTemplate(evt.target.value)}
-              className="input"
-            >
-              {this.props.templates.items.map((item, idx) => (
-                <option value={idx}>{item.name}</option>
-              ))}
-            </select>
+            <TemplateSelector />
           </div>
           <TemplatePreview html={this.state.previewHtml} />
         </div>
