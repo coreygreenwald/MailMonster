@@ -24,11 +24,27 @@ class Template extends Component {
 
   async componentDidMount(){
     this.props.fetchTemplates();
+    if(this.props.templates.activeTemplate !== null){
+      let activeTemplate = this.props.templates.items[this.props.templates.activeTemplate];
+      this.loadDesign(
+          activeTemplate.renderData
+      );
+      this.setState({
+        id: activeTemplate.id,
+        name: activeTemplate.name
+      })
+    }
   }
 
-  async componentDidUpdate(){
-    if(this.props.templates.activeTemplate.hasOwnProperty('renderData')){
-      this.loadDesign(this.props.templates.activeTemplate.renderData);
+  async componentDidUpdate(prevProps){
+    if (
+      this.props.templates.activeTemplate !== null &&
+      this.props.templates.activeTemplate !== prevProps.templates.activeTemplate
+    ) {
+      this.loadDesign(
+        this.props.templates.items[this.props.templates.activeTemplate]
+          .renderData
+      );
     }
   }
 
@@ -101,7 +117,7 @@ class Template extends Component {
               >
                 Save Template
               </button>
-              {this.props.templates.activeTemplate.hasOwnProperty('id') ? (
+              {this.props.templates.activeTemplate ? (
                 <button
                   className="btn"
                   onClick={this.handleTransitionToCampaign}
@@ -187,8 +203,9 @@ class Template extends Component {
       return;
     }
     const data = await this.saveDesign();
+    const id = this.props.templates.activeTemplate !== null ? this.props.templates.items[this.props.templates.activeTemplate].id : null
     await this.props.updateTemplate({
-      id: this.props.templates.activeTemplate.id || null,
+      id,
       name: this.state.name,
       html,
       data
@@ -207,7 +224,7 @@ class Template extends Component {
   }
 
   loadDesign = async (data) => {
-    this.editor.loadDesign(data); 
+    this.editor.loadDesign(data);
   }
 }
 

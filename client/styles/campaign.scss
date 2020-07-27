@@ -1,18 +1,14 @@
-.template {
-  @include flex(row, flex-start, flex-start);
-  padding: 20px;
-
-  &-instructions {
-    @include flex(column, flex-start, flex-start);
-    width: 25%;
-    padding: 10px;
+.campaign {
+  @include flex(row, space-between, flex-start);
+  &-render {
+    @include flex();
+    margin: 20px auto;
+    width: 60vh;
+    height: auto;
   }
-  &-editor {
-    width: 75%;
-    padding: 10px;
-    
-    &-controls {
-      @include flex(row, space-between, space-between);
-    }
+  &-controller {
+    margin: 25px auto;
+    width: 40vh;
+    height: auto;
   }
 }
