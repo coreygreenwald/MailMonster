@@ -1,0 +1,20 @@
+.home {
+  @include flex();
+
+  &-title {
+    text-align: center;
+  }
+
+  &-content-samples {
+    @include flex(row, center, flex-start);
+    flex-wrap: wrap;
+  }
+
+  a {
+      text-decoration: none;
+      color: $color-cerise;
+      &:hover{
+        text-decoration: underline;
+      }
+    }
+}

@@ -16,10 +16,6 @@ body {
 /* When moving the mouse over the close button */
 
 
-.home-content-samples {
-  @include flex(row, center, flex-start);
-  flex-wrap: wrap;
-}
 
 .template-preview-inner {
   width: 30vw;
@@ -31,6 +27,7 @@ body {
   background-color: $color-email-bg;
 }
 
+@import './styles/home.scss';
 @import './styles/general.scss';
 @import './styles/toast.scss';
 @import './styles/nav.scss';

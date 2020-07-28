@@ -6,7 +6,6 @@ import {setActiveTemplate, setMessageAndState} from '../store';
 import TemplatePreview from './TemplatePreview';
 import TemplateSelector from './TemplateSelector';
 import FormInput from './FormInput';
-// import { parseHtmlForVariables } from '../utils'
 
 class Campaign extends Component {
   constructor(props) {

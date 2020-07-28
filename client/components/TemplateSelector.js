@@ -12,7 +12,7 @@ const TemplateSelector = (props) => {
         onChange={(evt) => setActiveTemplate(evt.target.value)}
         className="input"
       >
-        <option value={-1}>New Template</option>
+        <option value={-1}>Select Template</option>
         {templates.map((item, idx) => (
           <option key={item.id} value={idx}>{item.name}</option>
         ))}

@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import TemplatePreview from './TemplatePreview';
 
 export const UserHome = props => {
@@ -8,12 +9,12 @@ export const UserHome = props => {
 
   return (
     <div className="home">
-      <h3 className="home-title">Welcome, {email}</h3>
+      <h3 className="home-title">Welcome, {email} - Let's build some <Link to="/templates">templates</Link> and then use them for an awesome email <Link to="/campaigns">campaign.</Link></h3>
       <div className="home-content">
         {templates.length ? (
           <div className="home-content-samples">
-            {templates.map((template) => (
-              <TemplatePreview html={template.html} />
+            {templates.map((template, idx) => (
+              <TemplatePreview html={template.html} id={idx}/>
             ))}
           </div>
         ) : (
@@ -31,6 +32,10 @@ const mapState = state => {
     email: state.user.email,
     templates: state.templates.items
   }
+}
+
+const mapDispatch = dispatch => {
+
 }
 
 export default connect(mapState)(UserHome)
