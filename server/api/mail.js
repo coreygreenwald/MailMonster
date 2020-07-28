@@ -4,7 +4,7 @@ const apiKey =
   process.env.SENDGRID_API_KEY || require('../../config/sendgrid').apiKey;
 sgMail.setApiKey(apiKey);
 
-router.post('/', (req, res, next) => {
+router.post('/', async (req, res, next) => {
   try {
     const { html, to, from, subject } = req.body;  
     const msg = {
@@ -14,10 +14,10 @@ router.post('/', (req, res, next) => {
       text: ' ',
       html,
     };
-    sgMail.send(msg);
-    res.send('Test Email Sent!');
+    const sendMailResponse = await sgMail.send(msg);
+    res.send('Email Sent Successfully!');
   } catch(err){
-    next(err);
+    res.status(401).send('Unauthorized');
   }
 });
 

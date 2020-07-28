@@ -1,14 +1,21 @@
 .campaign {
-  @include flex(row, space-between, flex-start);
-  &-render {
-    @include flex();
-    margin: 20px auto;
-    width: 60vh;
-    height: auto;
-  }
-  &-controller {
-    margin: 25px auto;
-    width: 40vh;
-    height: auto;
+  @include flex();
+
+  &-container {
+    @include flex(row, center, flex-start);
+    width: 100%;
+
+    &-render {
+      @include flex();
+      margin: 20px auto;
+      max-width: 60%;
+      height: auto;
+    }
+
+    &-controller {
+      margin: 20px auto;
+      max-width: 40%;
+      height: auto;
+    }
   }
 }

@@ -1,0 +1,20 @@
+//Define colors - Names from - https://www.color-blindness.com/color-name-hue/
+$color-solitude: #F5F7F8;
+$color-cerise: #D8276C;
+$color-moon-yellow: #E8D20F;
+$color-emerald: #59CA63;
+$color-gainsboro: #E7E7E7;
+$color-red-orange: #F44336;
+$color-white: #FFFFFF;
+$color-charcoal: #424242;
+$color-suva-gray: #888888;
+$color-black: #000000;
+
+//Map colors to use case
+$primary-background-color: $color-solitude;
+$text-color: $color-charcoal;
+$color-warn: $color-moon-yellow;
+$color-error: $color-red-orange;
+$color-success: $color-emerald;
+$color-email-bg: $color-gainsboro;
+

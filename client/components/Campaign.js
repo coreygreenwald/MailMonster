@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {render} from 'react-dom';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
-import {setActiveTemplate} from '../store';
+import {setActiveTemplate, setMessageAndState} from '../store';
 import TemplatePreview from './TemplatePreview';
 import TemplateSelector from './TemplateSelector';
-import { expect } from 'chai';
+import FormInput from './FormInput';
+// import { parseHtmlForVariables } from '../utils'
 
 class Campaign extends Component {
   constructor(props) {
@@ -42,14 +43,39 @@ class Campaign extends Component {
     }
   }
 
-  sendEmail = () => {
-    axios.post('/api/mail', {
-      html: this.state.previewHtml,
-      to: this.state.to,
-      from: this.state.from,
-      subject: this.state.subject,
-      text: ''
-    });
+  validateFields(){
+    const {to, from, subject, variables} = this.state;
+    const fieldsToComplete = [];
+    if(!to) fieldsToComplete.push('to');
+    if(!from) fieldsToComplete.push('from');
+    if(!subject) fieldsToComplete.push('subject');
+    for(let k in variables){
+      if(variables.hasOwnProperty(k) && !variables[k]){ //Catch edge case
+        fieldsToComplete.push(k.slice(2,-2));
+      } 
+    }
+    return fieldsToComplete;
+  }
+
+  sendEmail = async () => {
+    const { updateToast } = this.props;
+    const incompleteFields = this.validateFields();
+    if(incompleteFields.length){
+      updateToast(`Please fill in the following field(s): ${incompleteFields.join(', ')}`, 'error');
+      return;
+    }
+    try {
+      const {data:emailConfirmation} = await axios.post('/api/mail', {
+        html: this.state.previewHtml,
+        to: this.state.to,
+        from: this.state.from,
+        subject: this.state.subject,
+        text: '',
+      });
+      updateToast(`Email to ${this.state.to} sent successfully!`, 'success');
+    } catch (err){
+      updateToast(`Something went wrong - It's possible you haven't validated this email for sending - use sdatatester@gmail.com for testing!`, 'error')
+    }
   }
 
   handleUserVariables = (evt) => {
@@ -73,7 +99,7 @@ class Campaign extends Component {
       }
       return `{{${val}}}`;
     })
-    let updatedHtml = html.replace(/{{\w+}}/gi, () => replacements.shift());
+    let updatedHtml = html.replace(/{{\w+}}/gi, (item) => this.state.variables[item] || item);
     this.setState({
       previewHtml: updatedHtml
     })
@@ -83,7 +109,6 @@ class Campaign extends Component {
     let variables = html.match(/{{\w+}}/gi);
     if (variables && variables.length) {
       variables = variables
-        .map((val) => val.slice(2, -2))
         .reduce((prev, curr) => {
           prev[curr] = this.state.variables[curr] || '';
           return prev;
@@ -99,55 +124,54 @@ class Campaign extends Component {
   render() {
     return (
       <div className="campaign">
-        <div className="campaign-render">
-          <div className="campaign-controller-input">
-            <TemplateSelector />
-          </div>
-          <TemplatePreview html={this.state.previewHtml} />
+        <div className="campaign-template-select">
+          <TemplateSelector />
         </div>
-        <div className="campaign-controller">
-          <div className="campaign-controller-input">
-            <label htmlFor="to">To:</label>
-            <input
-              name="to"
-              value={this.state.to}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="campaign-controller-input">
-            <label htmlFor="from">From:</label>
-            <input
-              name="from"
-              value={this.state.from}
-              onChange={this.handleChange}
-              disabled
-            />
-          </div>
-          <div className="campaign-controller-input">
-            <label htmlFor="subject">Subject:</label>
-            <input
-              name="subject"
-              value={this.state.subject}
-              onChange={this.handleChange}
-            />
-          </div>
-          <hr />
-          {Object.keys(this.state.variables).map((userVariable) => {
-            return (
-              <div className="campaign-controller-input">
-                <label htmlFor={userVariable}>{userVariable}:</label>
-                <input
-                  name={userVariable}
-                  value={this.state.variables[userVariable]}
-                  onChange={this.handleUserVariables}
-                />
+        {
+          this.props.templates.activeTemplate === -1 ? (
+            <h2>Pick a template to start drafting an email - or head over to <Link to="/templates">templates</Link> to build a new one!</h2>
+          ) : (
+            <div className="campaign-container">
+              <div className="campaign-container-render">
+                <TemplatePreview html={this.state.previewHtml} size="large" />
               </div>
-            );
-          })}
-          <button className="btn" onClick={this.sendEmail}>
-            Send Email!
-          </button>
-        </div>
+              <div className="campaign-container-controller">
+                <FormInput
+                  name="to"
+                  labelDisplay="To"
+                  value={this.state.to}
+                  onChangeFunc={this.handleChange}
+                />
+                <FormInput
+                  name="from"
+                  labelDisplay="From"
+                  value={this.state.from}
+                  onChangeFunc={this.handleChange}
+                />
+                <FormInput
+                  name="subject"
+                  labelDisplay="Subject"
+                  value={this.state.subject}
+                  onChangeFunc={this.handleChange}
+                />
+                <hr />
+                {Object.keys(this.state.variables).map((userVariable) => {
+                  return (
+                    <FormInput
+                      name={userVariable}
+                      key={userVariable}
+                      labelDisplay={userVariable.slice(2, -2)}
+                      value={this.state.variables[userVariable]}
+                      onChangeFunc={this.handleUserVariables}
+                    />
+                  );
+                })}
+                <button className="btn" onClick={this.sendEmail}>
+                  Send Email!
+                </button>
+              </div>
+            </div>
+        )}
       </div>
     );
   }
@@ -161,6 +185,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setActiveTemplate(templateId) {
     dispatch(setActiveTemplate(templateId));
+  },
+  updateToast(message, state) {
+    dispatch(setMessageAndState(message, state));
   },
 });
 

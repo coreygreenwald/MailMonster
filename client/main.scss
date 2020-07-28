@@ -1,20 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;1,600&display=swap');
 @import './styles/functions.scss';
-
-$color-solitude: #F5F7F8;
-$color-cerise: #D8276C;
-$color-warn: #e8d20f;
-$color-success: #59ca63;
-$color-email-bg: #e7e7e7;
-
-$color-red: #f44336;
-$color-white: #FFFFFF;
-$color-gray: #888888;
-$color-black: #000000;
+@import './styles/colors.scss';
 
 $primary-background-color: $color-solitude;
 $text-color: rgb(66, 66, 66);
-
 
 body {
   background-color: $primary-background-color;
@@ -22,68 +11,10 @@ body {
   color: $text-color;
 }
 
-.btn {
-  padding:10px 20px;
-  margin: 2px;
-	display:inline-block;
-	border-radius:3px;
-	background-color: $color-cerise;
-	font-size:16px;
-  color: $color-white;
-  &-disabled {
-    background-color: $color-gray;
-  }
-}
-
-.alert {
-  padding: 20px;
-  color: white;
-  border-radius:3px;
-  margin-bottom: 15px;
-  &.error {
-      background-color: $color-red;
-  }
-  &.warn {
-      background-color: $color-warn;
-  }
-  &.success {
-      background-color: $color-success;
-  }
-}
-
 /* The close button */
-.closebtn {
-  margin-left: 15px;
-  color: white;
-  font-weight: bold;
-  float: right;
-  font-size: 22px;
-  line-height: 20px;
-  cursor: pointer;
-  transition: 0.3s;
-}
 
-.label-input, label {
-  font-size: 24px;
-  margin-right: 5px;
-}
-
-.input, input { 
-  margin: 5px;
-	border-radius:3px;
-	background-color: $color-white;
-	font-size:24px;
-  color: $color-black;
-  height: 32px;
-  width: 250x;
-  &-disabled {
-    background-color: $color-gray;
-  }
-}
 /* When moving the mouse over the close button */
-.closebtn:hover {
-  color: black;
-}
+
 
 .home-content-samples {
   @include flex(row, center, flex-start);
@@ -100,6 +31,8 @@ body {
   background-color: $color-email-bg;
 }
 
+@import './styles/general.scss';
+@import './styles/toast.scss';
 @import './styles/nav.scss';
 @import './styles/template.scss';
 @import './styles/campaign.scss';

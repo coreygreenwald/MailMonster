@@ -3,32 +3,29 @@ import {connect} from 'react-redux'
 import PropTypes from 'prop-types'
 import {auth} from '../store'
 
-const AuthForm = props => {
-  const {name, displayName, handleSubmit, error} = props
-
-  return (
-    <div>
-      <form onSubmit={handleSubmit} name={name}>
-        <div>
-          <label htmlFor="email">
-            <small>Email</small>
-          </label>
-          <input name="email" type="text" />
-        </div>
-        <div>
-          <label htmlFor="password">
-            <small>Password</small>
-          </label>
-          <input name="password" type="password" />
-        </div>
-        <div>
-          <button type="submit">{displayName}</button>
-        </div>
-        {error && error.response && <div> {error.response.data} </div>}
-      </form>
-    </div>
-  )
-}
+const AuthForm = ({name, displayName, handleSubmit}) => (
+  <div>
+    <form onSubmit={handleSubmit} name={name}>
+      <div className="form-label-input">
+        <label htmlFor="email">
+          <small>Email</small>
+        </label>
+        <input name="email" type="text" />
+      </div>
+      <div className="form-label-input">
+        <label htmlFor="password">
+          <small>Password</small>
+        </label>
+        <input name="password" type="password" />
+      </div>
+      <div>
+        <button className="btn" type="submit">
+          {displayName}
+        </button>
+      </div>
+    </form>
+  </div>
+);
 
 const mapLogin = state => {
   return {
@@ -58,8 +55,8 @@ const mapDispatch = dispatch => {
   }
 }
 
-export const Login = connect(mapLogin, mapDispatch)(AuthForm)
-export const Signup = connect(mapSignup, mapDispatch)(AuthForm)
+export const Login = connect(mapLogin, mapDispatch)(AuthForm);
+export const Signup = connect(mapSignup, mapDispatch)(AuthForm);
 
 AuthForm.propTypes = {
   name: PropTypes.string.isRequired,
