@@ -7,6 +7,7 @@
     width: 20%;
     padding: 10px;
   }
+  
   &-editor {
     width: 80%;
     height: auto;
@@ -19,5 +20,15 @@
     &-controls {
       @include flex(row, space-between, space-between);
     }
+  }
+
+  &-preview-inner {
+    width: 30vw;
+    height: 30vh;
+    overflow: hidden;
+    border: 4px solid $color-cerise;
+    border-radius: 3px;
+    margin: 5px;
+    background-color: $color-email-bg;
   }
 }

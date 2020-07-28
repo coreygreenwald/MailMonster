@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {fetchTemplates, updateTemplate, setMessageAndState} from '../store';
+import {fetchTemplates, updateTemplate, setMessageAndState, setActiveTemplate} from '../store';
 import history from '../history';
-
 import EmailEditor from 'react-email-editor';
 import TemplateSelector from './TemplateSelector';
 import TemplateInstructions from './TemplateInstructions';
+import emptyTemplate from '../utils/emptyTemplate';
 
 const MIN_TEMPLATE_SIZE = 5970;
 
@@ -35,8 +35,9 @@ class Template extends Component {
 
   async componentDidUpdate(prevProps) {
     if (
-      this.props.templates.activeTemplate !== null &&
-      this.props.templates.activeTemplate !== prevProps.templates.activeTemplate
+      this.props.templates.activeTemplate !== -1 &&
+      this.props.templates.activeTemplate !== prevProps.templates.activeTemplate &&
+      this.props.templates.items[this.props.templates.activeTemplate]
     ) {
       this.loadDesign(
         this.props.templates.items[this.props.templates.activeTemplate]
@@ -63,6 +64,15 @@ class Template extends Component {
       });
     });
   };
+
+  clearDesign = async () => {
+    await this.loadDesign(emptyTemplate);
+    this.setState({
+      id: null,
+      name: ''
+    })
+    this.props.setActiveTemplate(-1);
+  }
 
   saveDesign = () => {
     return new Promise((resolve, reject) => {
@@ -144,6 +154,12 @@ class Template extends Component {
               >
                 Save Template
               </button>
+              <button
+                className='btn'
+                onClick={this.clearDesign}
+              >
+                Clear Template
+              </button>
               {this.props.templates.activeTemplate !== -1 ? (
                 <button
                   className="btn"
@@ -175,6 +191,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     updateToast(message, state) {
       dispatch(setMessageAndState(message, state));
+    },
+    setActiveTemplate(templateId) {
+      dispatch(setActiveTemplate(templateId));
     },
   };
 };
