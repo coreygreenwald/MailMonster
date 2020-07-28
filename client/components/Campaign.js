@@ -20,8 +20,10 @@ class Campaign extends Component {
   }
 
   async componentDidMount() {
-    const activeTemplate = this.props.templates.activeTemplate;
-    this.initiatePreviewHtml(activeTemplate);
+    const {activeTemplate} = this.props.templates;
+    if(activeTemplate !== -1){
+      this.initiatePreviewHtml(activeTemplate);
+    }
   }
 
   async componentDidUpdate(prevProps) {
@@ -29,9 +31,6 @@ class Campaign extends Component {
       prevProps.templates.activeTemplate !== this.props.templates.activeTemplate
     ) {
       const activeTemplate = this.props.templates.activeTemplate;
-      this.initiatePreviewHtml(activeTemplate);
-    } else if (this.props.templates.activeTemplate === null) {
-      const activeTemplate = 0;
       this.initiatePreviewHtml(activeTemplate);
     }
   }
@@ -136,8 +135,14 @@ class Campaign extends Component {
       });
       updateToast(`Email to ${this.state.to} sent successfully!`, 'success');
     } catch (err) {
+      let message;
+      if(err.response.data.includes('API')){
+        message = 'It looks like your API Key has either not been added or is invalid!'
+      } else {
+        message = `Something went wrong - It's possible you haven't validated this email for sending - use sdatatester@gmail.com for testing!`;
+      }
       updateToast(
-        `Something went wrong - It's possible you haven't validated this email for sending - use sdatatester@gmail.com for testing!`,
+        message,
         'error'
       );
     }

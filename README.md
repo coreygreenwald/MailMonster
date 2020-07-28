@@ -25,12 +25,8 @@ This application looks for multiple environmental variables when booting this ap
 
 1. `process.env.DATABASE_URL` - found within the `db` tier of the application and loaded in the `_db.js` file within - this must be set when running the application in production or you can use the fallback process when testing on local by creating a postgreSQL database named 'mailmonster' as well as one for testing called 'mailmonster-test'.
 
-2. `process.env.SENDGRID_API_KEY` - This application takes advantage of the sendgrid api to handle email sending. Sendgrid require that you verify emails and/or domains before using them as valid "senders" on emails sent using our application. Pass in your key from the environment - with your personal API Keys to enable sending emails. Alternatively you can use the config file by placing a config file called `sendgrid.js` within the `config` directory in the following format: 
-```js
-module.exports = {
-  apiKey: 'MY_SENDGRID_APIKEY'
-};
-```
+2. `process.env.SENDGRID_API_KEY` - This application takes advantage of the sendgrid api to handle email sending. Sendgrid require that you verify emails and/or domains before using them as valid "senders" on emails sent using our application. Pass in your key from the environment - with your personal API Keys to enable sending emails.
+
 Once you have accounted for these dependencies you can start up the application by running `npm start`!
 
 ## Code Style and Organization

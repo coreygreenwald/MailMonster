@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const sgMail = require('@sendgrid/mail');
-const apiKey =
-  process.env.SENDGRID_API_KEY;
-sgMail.setApiKey(apiKey);
+const apiKey = process.env.SENDGRID_API_KEY;
+let mailEnabled = !!apiKey;
 
 router.post('/', async (req, res, next) => {
   try {
@@ -17,7 +16,8 @@ router.post('/', async (req, res, next) => {
     const sendMailResponse = await sgMail.send(msg);
     res.send('Email Sent Successfully!');
   } catch (err) {
-    res.status(401).send('Unauthorized');
+    if(mailEnabled) res.status(401).send('Unauthorized');
+    else res.status(400).send('API Key Disabled')
   }
 });
 
