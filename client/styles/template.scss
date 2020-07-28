@@ -30,5 +30,10 @@
     border-radius: 3px;
     margin: 5px;
     background-color: $color-email-bg;
+    
+    &-large{
+      width: 600px;
+      height: auto;
+    }
   }
 }

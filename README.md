@@ -7,6 +7,8 @@ MailMonster is an application for building reusable marketing email templates in
 Before diving into the organization and infrasture of this project, this brief demo will take you through the high-level features:
 [![editor_view](./public/editor-view.png)](https://youtu.be/D33SgNY79Bo)
 
+Application Live at [https://mailmonsterz.herokuapp.com/](https://mailmonsterz.herokuapp.com/)
+
 ## Getting Started
 
 This application requires installation of [node.js](https://nodejs.org/en/download/) and [postgreSQL](https://www.postgresql.org/download/) to begin the setup process.

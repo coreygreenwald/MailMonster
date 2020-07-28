@@ -4,8 +4,6 @@ const {db} = require('../db');
 const path = require('path');
 const passport = require('passport');
 const session = require('express-session');
-const {apiKey} = require('../config/sendgrid');
-const {start} = require('repl');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const sessionStore = new SequelizeStore({db});
 const app = express();
@@ -54,7 +52,7 @@ app.use('*', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public/index.html'));
 });
 
-//Error handline middleware
+//Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err);
   console.error(err.stack);
