@@ -1,6 +1,6 @@
 import React from 'react';
 import {Navbar, Toast} from './components';
-import Routes from './routes';
+import Routes from './Routes';
 import './main.scss';
 
 const App = () => {

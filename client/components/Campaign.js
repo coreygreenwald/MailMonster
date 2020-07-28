@@ -19,14 +19,6 @@ class Campaign extends Component {
     };
   }
 
-  initiatePreviewHtml(activeTemplateId) {
-    const activeTemplate = this.props.templates.items[activeTemplateId];
-    this.parseHtmlForVariables(activeTemplate.html);
-    this.setState({
-      previewHtml: activeTemplate.html,
-    });
-  }
-
   async componentDidMount() {
     const activeTemplate = this.props.templates.activeTemplate;
     this.initiatePreviewHtml(activeTemplate);
@@ -44,68 +36,39 @@ class Campaign extends Component {
     }
   }
 
-  validateFields() {
-    const {to, from, subject, variables} = this.state;
-    const fieldsToComplete = [];
-    if (!to) fieldsToComplete.push('to');
-    if (!from) fieldsToComplete.push('from');
-    if (!subject) fieldsToComplete.push('subject');
-    for (let k in variables) {
-      if (variables.hasOwnProperty(k) && !variables[k]) {
-        //Catch edge case
-        fieldsToComplete.push(k.slice(2, -2));
-      }
-    }
-    return fieldsToComplete;
-  }
-
-  sendEmail = async () => {
-    const {updateToast} = this.props;
-    const incompleteFields = this.validateFields();
-    if (incompleteFields.length) {
-      updateToast(
-        `Please fill in the following field(s): ${incompleteFields.join(', ')}`,
-        'error'
-      );
-      return;
-    }
-    try {
-      const {data: emailConfirmation} = await axios.post('/api/mail', {
-        html: this.state.previewHtml,
-        to: this.state.to,
-        from: this.state.from,
-        subject: this.state.subject,
-        text: '',
-      });
-      updateToast(`Email to ${this.state.to} sent successfully!`, 'success');
-    } catch (err) {
-      updateToast(
-        `Something went wrong - It's possible you haven't validated this email for sending - use sdatatester@gmail.com for testing!`,
-        'error'
-      );
-    }
-  };
-
-  handleUserVariables = (evt) => {
-    const variables = {...this.state.variables};
-    variables[evt.target.name] = evt.target.value;
-    this.setState(
-      {
-        variables,
-      },
-      () =>
-        this.replaceHtmlVariables(
-          this.props.templates.items[this.props.templates.activeTemplate].html
-        )
-    );
-  };
-
   handleChange = (evt) => {
     this.setState({
       [evt.target.name]: evt.target.value,
     });
   };
 
+  //HTML Handline Functions
+  //Process the active template the user has selected, determines html variables, and creates the preview html for the user to see.
+  initiatePreviewHtml = (activeTemplateId) => {
+    const activeTemplate = this.props.templates.items[activeTemplateId];
+    this.parseHtmlForVariables(activeTemplate.html);
+    this.setState({
+      previewHtml: activeTemplate.html,
+    });
+  };
+
+  //Actually go through the currentHTML and scrape (using RegEx) for user variables. Place these on state object for FormInput fields.
+  parseHtmlForVariables = (html) => {
+    let variables = html.match(/{{\w+}}/gi);
+    if (variables && variables.length) {
+      variables = variables.reduce((prev, curr) => {
+        prev[curr] = this.state.variables[curr] || '';
+        return prev;
+      }, {});
+    } else {
+      variables = {};
+    }
+    this.setState({
+      variables,
+    });
+  };
+
+  //Handle the live preview of the template as the fields are filled in by the user.
   replaceHtmlVariables = (html) => {
     const replacements = Object.keys(this.state.variables).map((val) => {
       if (this.state.variables[val]) {
@@ -122,19 +85,62 @@ class Campaign extends Component {
     });
   };
 
-  parseHtmlForVariables = (html) => {
-    let variables = html.match(/{{\w+}}/gi);
-    if (variables && variables.length) {
-      variables = variables.reduce((prev, curr) => {
-        prev[curr] = this.state.variables[curr] || '';
-        return prev;
-      }, {});
-    } else {
-      variables = {};
+  //Process field changes that affect the render and call the parser to insert them into the next render.
+  handleUserVariables = (evt) => {
+    const variables = {...this.state.variables};
+    variables[evt.target.name] = evt.target.value;
+    this.setState(
+      {
+        variables,
+      },
+      () =>
+        this.replaceHtmlVariables(
+          this.props.templates.items[this.props.templates.activeTemplate].html
+        )
+    );
+  };
+
+  //validateFields - called to ensure all have been filled in before email is sent.
+  validateFields = () => {
+    const {to, from, subject, variables} = this.state;
+    const fieldsToComplete = [];
+    if (!to) fieldsToComplete.push('to');
+    if (!from) fieldsToComplete.push('from');
+    if (!subject) fieldsToComplete.push('subject');
+    for (let k in variables) {
+      if (variables.hasOwnProperty(k) && !variables[k]) {
+        //Just checking !variables[k] creates template issues with built in JS methods and properties.
+        fieldsToComplete.push(k.slice(2, -2));
+      }
     }
-    this.setState({
-      variables,
-    });
+    return fieldsToComplete;
+  };
+
+  //SendEmail - Responsible for performing FE validation and calling the api with the email data.
+  sendEmail = async () => {
+    const {updateToast} = this.props;
+    const incompleteFields = this.validateFields();
+    if (incompleteFields.length) {
+      updateToast(
+        `Please fill in the following field(s): ${incompleteFields.join(', ')}`,
+        'error'
+      );
+      return;
+    }
+    try {
+      const {data: emailConfirmation} = await axios.post('/api/mail', {
+        html: this.state.previewHtml,
+        to: this.state.to,
+        from: this.state.from,
+        subject: this.state.subject,
+      });
+      updateToast(`Email to ${this.state.to} sent successfully!`, 'success');
+    } catch (err) {
+      updateToast(
+        `Something went wrong - It's possible you haven't validated this email for sending - use sdatatester@gmail.com for testing!`,
+        'error'
+      );
+    }
   };
 
   render() {

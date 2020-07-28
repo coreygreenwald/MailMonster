@@ -1,10 +1,7 @@
 import React, {Component} from 'react';
-import {render} from 'react-dom';
 import {connect} from 'react-redux';
 import {fetchTemplates, updateTemplate, setMessageAndState} from '../store';
 import history from '../history';
-import {Link} from 'react-router-dom';
-import axios from 'axios';
 
 import EmailEditor from 'react-email-editor';
 import TemplateSelector from './TemplateSelector';
@@ -47,6 +44,77 @@ class Template extends Component {
       );
     }
   }
+
+  handleTransitionToCampaign = () => {
+    history.push('/campaigns');
+  };
+
+  parseHtmlForVariables = (html) => {
+    let userVariables = html.match(/{{\w+}}/gi);
+    return userVariables || [];
+  };
+
+  exportHtml = () => {
+    return new Promise((resolve, reject) => {
+      this.editor.exportHtml((data) => {
+        const {design, html} = data;
+        if (html) resolve(html);
+        else reject();
+      });
+    });
+  };
+
+  saveDesign = () => {
+    return new Promise((resolve, reject) => {
+      this.editor.saveDesign((data) => {
+        if (data) resolve(data);
+        else reject();
+      });
+    });
+  };
+
+  exportDesign = async () => {
+    //Make sure template is named.
+    if (!this.state.name) {
+      this.props.updateToast('Please name this template!', 'error');
+      return;
+    }
+    const html = await this.exportHtml();
+    //Make sure template isn't empty.
+    if (html.length < MIN_TEMPLATE_SIZE) {
+      this.props.updateToast(
+        'Looks like your template is empty - get creative with your design!',
+        'error'
+      );
+      return;
+    }
+    const data = await this.saveDesign();
+    //Determine if this is a new template or a modification to an existing template.
+    const id =
+      this.props.templates.activeTemplate !== -1
+        ? this.props.templates.items[this.props.templates.activeTemplate].id
+        : null;
+    await this.props.updateTemplate({
+      id,
+      name: this.state.name,
+      html,
+      data,
+    });
+    const userVariables = this.parseHtmlForVariables(html);
+    let message = 'Template Saved Successfully!';
+    let messageStatus = 'success';
+    //Warn user if they made a template that doesn't have available "variables" for them to fill later.
+    if (!userVariables.length) {
+      message +=
+        '\n Warning - There is no personalizable data associated with this template. You can add some to your template by using {{example_here}} wherever you can place text';
+      messageStatus = 'warn';
+    }
+    this.props.updateToast(message, messageStatus);
+  };
+
+  loadDesign = async (data) => {
+    this.editor.loadDesign(data);
+  };
 
   render() {
     const {items} = this.props.templates;
@@ -91,77 +159,6 @@ class Template extends Component {
       </div>
     );
   }
-
-  handleTransitionToCampaign = () => {
-    history.push('/campaigns');
-  };
-
-  parseHtmlForVariables = (html) => {
-    let userVariables = html.match(/{{\w+}}/gi);
-    return userVariables || [];
-  };
-
-  exportHtml = () => {
-    return new Promise((resolve, reject) => {
-      this.editor.exportHtml((data) => {
-        const {design, html} = data;
-        if (html) resolve(html);
-        else reject();
-      });
-    });
-  };
-
-  saveDesign = () => {
-    return new Promise((resolve, reject) => {
-      this.editor.saveDesign((data) => {
-        if (data) resolve(data);
-        else reject();
-      });
-    });
-  };
-
-  clearDesign = () => {
-    this.loadDesign({});
-  };
-
-  exportDesign = async () => {
-    if (!this.state.name) {
-      this.props.updateToast('Please name this template!', 'error');
-      return;
-    }
-    const html = await this.exportHtml();
-    if (html.length < MIN_TEMPLATE_SIZE) {
-      this.props.updateToast(
-        'Looks like your template is empty - get creative with your design!',
-        'error'
-      );
-      return;
-    }
-    const data = await this.saveDesign();
-    const id =
-      this.props.templates.activeTemplate !== -1
-        ? this.props.templates.items[this.props.templates.activeTemplate].id
-        : null;
-    await this.props.updateTemplate({
-      id,
-      name: this.state.name,
-      html,
-      data,
-    });
-    const userVariables = this.parseHtmlForVariables(html);
-    let message = 'Template Saved Successfully!';
-    let messageStatus = 'success';
-    if (!userVariables.length) {
-      message +=
-        '\n Warning - There is no personalizable data associated with this template. You can add some to your template by using {{example_here}} wherever you can place text';
-      messageStatus = 'warn';
-    }
-    this.props.updateToast(message, messageStatus);
-  };
-
-  loadDesign = async (data) => {
-    this.editor.loadDesign(data);
-  };
 }
 
 const mapStateToProps = (state) => ({

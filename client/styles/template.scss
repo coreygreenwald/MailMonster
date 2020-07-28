@@ -4,13 +4,18 @@
 
   &-instructions {
     @include flex(column, flex-start, flex-start);
-    width: 25%;
+    width: 20%;
     padding: 10px;
   }
   &-editor {
-    width: 75%;
+    width: 80%;
     height: auto;
     padding: 10px;
+    &-main { 
+      div:first-child{ //Select for editor from unlayer.
+        height: 70vh !important;
+      }
+    }
     &-controls {
       @include flex(row, space-between, space-between);
     }

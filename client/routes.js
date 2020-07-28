@@ -28,6 +28,7 @@ class Routes extends Component {
             <Route path="/home" component={UserHome} />
             <Route path="/templates" component={Template} />
             <Route path="/campaigns" component={Campaign} />
+            <Route component={UserHome} />
           </Switch>
         )}
         {/* Fallback Component */}
