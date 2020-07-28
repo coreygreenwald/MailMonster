@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {render} from 'react-dom';
 import {connect} from 'react-redux';
 import {fetchTemplates, updateTemplate, setMessageAndState} from '../store';
-import history from '../history'
+import history from '../history';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 
@@ -13,30 +13,30 @@ import TemplateInstructions from './TemplateInstructions';
 const MIN_TEMPLATE_SIZE = 5970;
 
 class Template extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
       id: null,
       templates: [],
-      name: ''
-    }
+      name: '',
+    };
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     this.props.fetchTemplates();
-    if(this.props.templates.activeTemplate !== -1){
-      let activeTemplate = this.props.templates.items[this.props.templates.activeTemplate];
-      this.loadDesign(
-          activeTemplate.renderData
-      );
+    if (this.props.templates.activeTemplate !== -1) {
+      let activeTemplate = this.props.templates.items[
+        this.props.templates.activeTemplate
+      ];
+      this.loadDesign(activeTemplate.renderData);
       this.setState({
         id: activeTemplate.id,
-        name: activeTemplate.name
-      })
+        name: activeTemplate.name,
+      });
     }
   }
 
-  async componentDidUpdate(prevProps){
+  async componentDidUpdate(prevProps) {
     if (
       this.props.templates.activeTemplate !== null &&
       this.props.templates.activeTemplate !== prevProps.templates.activeTemplate
@@ -49,7 +49,7 @@ class Template extends Component {
   }
 
   render() {
-    const { items } = this.props.templates;
+    const {items} = this.props.templates;
     return (
       <div className="template">
         <TemplateInstructions />
@@ -80,7 +80,9 @@ class Template extends Component {
                 <button
                   className="btn"
                   onClick={this.handleTransitionToCampaign}
-                >Use In Campaign</button>
+                >
+                  Use In Campaign
+                </button>
               ) : null}
               <TemplateSelector />
             </div>
@@ -92,85 +94,92 @@ class Template extends Component {
 
   handleTransitionToCampaign = () => {
     history.push('/campaigns');
-  }
+  };
 
   parseHtmlForVariables = (html) => {
-    let userVariables = html.match(/{{\w+}}/ig);
+    let userVariables = html.match(/{{\w+}}/gi);
     return userVariables || [];
-  }
+  };
 
   exportHtml = () => {
     return new Promise((resolve, reject) => {
       this.editor.exportHtml((data) => {
         const {design, html} = data;
-        if(html) resolve(html); 
+        if (html) resolve(html);
         else reject();
-      })
-    })
-  }
+      });
+    });
+  };
 
   saveDesign = () => {
     return new Promise((resolve, reject) => {
       this.editor.saveDesign((data) => {
-        if(data) resolve(data);
+        if (data) resolve(data);
         else reject();
-      })
-    })
-  }
+      });
+    });
+  };
 
   clearDesign = () => {
-    this.loadDesign({})
-  }
-  
+    this.loadDesign({});
+  };
+
   exportDesign = async () => {
-    if(!this.state.name){
+    if (!this.state.name) {
       this.props.updateToast('Please name this template!', 'error');
       return;
     }
     const html = await this.exportHtml();
     if (html.length < MIN_TEMPLATE_SIZE) {
-      this.props.updateToast('Looks like your template is empty - get creative with your design!', 'error')
+      this.props.updateToast(
+        'Looks like your template is empty - get creative with your design!',
+        'error'
+      );
       return;
     }
     const data = await this.saveDesign();
-    const id = this.props.templates.activeTemplate !== -1 ? this.props.templates.items[this.props.templates.activeTemplate].id : null;
+    const id =
+      this.props.templates.activeTemplate !== -1
+        ? this.props.templates.items[this.props.templates.activeTemplate].id
+        : null;
     await this.props.updateTemplate({
       id,
       name: this.state.name,
       html,
-      data
-    })
+      data,
+    });
     const userVariables = this.parseHtmlForVariables(html);
-    let message = 'Template Saved Successfully!'
-    let messageStatus = 'success'
-    if(!userVariables.length){
-      message += '\n Warning - There is no personalizable data associated with this template. You can add some to your template by using {{example_here}} wherever you can place text';
-      messageStatus = 'warn'
-    } 
+    let message = 'Template Saved Successfully!';
+    let messageStatus = 'success';
+    if (!userVariables.length) {
+      message +=
+        '\n Warning - There is no personalizable data associated with this template. You can add some to your template by using {{example_here}} wherever you can place text';
+      messageStatus = 'warn';
+    }
     this.props.updateToast(message, messageStatus);
-  }
+  };
 
   loadDesign = async (data) => {
     this.editor.loadDesign(data);
-  }
-}
-
-const mapStateToProps = (state) => ({
-  templates: state.templates
-})
-
-const mapDispatchToProps = dispatch => {
-  return {
-    fetchTemplates(){
-      dispatch(fetchTemplates());
-    },
-    updateTemplate(template){
-      dispatch(updateTemplate(template))
-    },
-    updateToast(message, state){
-      dispatch(setMessageAndState(message, state));
-    }
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Template)
+const mapStateToProps = (state) => ({
+  templates: state.templates,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetchTemplates() {
+      dispatch(fetchTemplates());
+    },
+    updateTemplate(template) {
+      dispatch(updateTemplate(template));
+    },
+    updateToast(message, state) {
+      dispatch(setMessageAndState(message, state));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Template);

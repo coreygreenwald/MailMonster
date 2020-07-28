@@ -1,11 +1,11 @@
-const { expect } = require('chai')
-const { db } = require('../index')
-const Template = db.model('template')
+const {expect} = require('chai');
+const {db} = require('../index');
+const Template = db.model('template');
 
 describe('Template model', () => {
   beforeEach(() => {
-    return db.sync({ force: true })
-  })
+    return db.sync({force: true});
+  });
 
   describe('hooks', () => {
     describe('setDefaultName', () => {
@@ -15,7 +15,7 @@ describe('Template model', () => {
 
       beforeEach(async () => {
         template = await Template.create({
-          html
+          html,
         });
       });
 

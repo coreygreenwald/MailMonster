@@ -5,7 +5,7 @@ import user from './user';
 import templates from './templates';
 import toast from './toast';
 
-const reducer = combineReducers({user, templates, toast})
+const reducer = combineReducers({user, templates, toast});
 const middleware = applyMiddleware(thunkMiddleware);
 
 const store = createStore(reducer, middleware);

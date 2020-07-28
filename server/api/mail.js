@@ -6,7 +6,7 @@ sgMail.setApiKey(apiKey);
 
 router.post('/', async (req, res, next) => {
   try {
-    const { html, to, from, subject } = req.body;  
+    const {html, to, from, subject} = req.body;
     const msg = {
       to,
       from,
@@ -16,7 +16,7 @@ router.post('/', async (req, res, next) => {
     };
     const sendMailResponse = await sgMail.send(msg);
     res.send('Email Sent Successfully!');
-  } catch(err){
+  } catch (err) {
     res.status(401).send('Unauthorized');
   }
 });

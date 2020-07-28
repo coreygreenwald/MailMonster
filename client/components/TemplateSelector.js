@@ -14,17 +14,18 @@ const TemplateSelector = (props) => {
       >
         <option value={-1}>Select Template</option>
         {templates.map((item, idx) => (
-          <option key={item.id} value={idx}>{item.name}</option>
+          <option key={item.id} value={idx}>
+            {item.name}
+          </option>
         ))}
       </select>
     </div>
   );
 };
 
-
 const mapStateToProps = (state) => ({
   templates: state.templates.items,
-  activeTemplate: state.templates.activeTemplate
+  activeTemplate: state.templates.activeTemplate,
 });
 
 const mapDispatchToProps = (dispatch) => ({
