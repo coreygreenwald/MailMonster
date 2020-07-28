@@ -14,37 +14,39 @@ class Template extends Component {
     super(props);
     this.state = {
       id: null,
-      templates: [],
-      name: '',
+      name: ''
     };
   }
 
   async componentDidMount() {
     this.props.fetchTemplates();
     if (this.props.templates.activeTemplate !== -1) {
-      let activeTemplate = this.props.templates.items[
-        this.props.templates.activeTemplate
-      ];
-      this.loadDesign(activeTemplate.renderData);
-      this.setState({
-        id: activeTemplate.id,
-        name: activeTemplate.name,
-      });
+      this.handleChangedTemplate();
     }
   }
 
   async componentDidUpdate(prevProps) {
     if (
       this.props.templates.activeTemplate !== -1 &&
-      this.props.templates.activeTemplate !== prevProps.templates.activeTemplate &&
+      this.props.templates.activeTemplate !==
+        prevProps.templates.activeTemplate &&
       this.props.templates.items[this.props.templates.activeTemplate]
     ) {
-      this.loadDesign(
-        this.props.templates.items[this.props.templates.activeTemplate]
-          .renderData
-      );
+      this.handleChangedTemplate();
     }
   }
+
+  handleChangedTemplate = async () => {
+    const {id, name} = this.props.templates.activeTemplate;
+    await this.loadDesign(
+      this.props.templates.items[this.props.templates.activeTemplate]
+        .renderData
+    );
+    this.setState({
+      id,
+      name
+    });
+  };
 
   handleTransitionToCampaign = () => {
     history.push('/campaigns');
@@ -69,10 +71,10 @@ class Template extends Component {
     await this.loadDesign(emptyTemplate);
     this.setState({
       id: null,
-      name: ''
-    })
+      name: '',
+    });
     this.props.setActiveTemplate(-1);
-  }
+  };
 
   saveDesign = () => {
     return new Promise((resolve, reject) => {
@@ -154,10 +156,7 @@ class Template extends Component {
               >
                 Save Template
               </button>
-              <button
-                className='btn'
-                onClick={this.clearDesign}
-              >
+              <button className="btn" onClick={this.clearDesign}>
                 Clear Template
               </button>
               {this.props.templates.activeTemplate !== -1 ? (

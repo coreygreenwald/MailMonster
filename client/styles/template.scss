@@ -7,14 +7,14 @@
     width: 20%;
     padding: 10px;
   }
-  
+
   &-editor {
     width: 80%;
     height: auto;
     padding: 10px;
     &-main { 
       div:first-child{ //Select for editor from unlayer.
-        height: 70vh !important;
+        height: 68vh !important;
       }
     }
     &-controls {
