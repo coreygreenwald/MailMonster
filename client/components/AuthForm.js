@@ -5,7 +5,7 @@ import {auth} from '../store';
 
 const AuthForm = ({name, displayName, handleSubmit}) => (
   <div>
-    <form onSubmit={handleSubmit} name={name}>
+    <form className="auth-form" onSubmit={handleSubmit} name={name}>
       <div className="form-label-input">
         <label htmlFor="email">
           <small>Email</small>
