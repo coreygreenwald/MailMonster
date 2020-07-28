@@ -6,5 +6,5 @@ Template.belongsTo(User);
 
 module.exports = {
   User,
-  Template
-}
+  Template,
+};

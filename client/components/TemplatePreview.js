@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {Component} from 'react';
 import history from '../history';
 import {connect} from 'react-redux';
 import {setActiveTemplate} from '../store';
@@ -23,6 +23,5 @@ const mapDispatch = (dispatch) => ({
     dispatch(setActiveTemplate(templateId));
   },
 });
-
 
 export default connect(null, mapDispatch)(TemplatePreview);

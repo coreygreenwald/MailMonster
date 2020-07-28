@@ -7,10 +7,14 @@ const SET_MESSAGE_AND_STATE = 'SET_MESSAGE_AND_STATE';
 
 const defaultToast = {
   message: '',
-  state: '' //Enum - error / warn / success
+  state: '', //Enum - error / warn / success
 };
 
-export const setMessageAndState = (message, state) => ({type: SET_MESSAGE_AND_STATE, message, state})
+export const setMessageAndState = (message, state) => ({
+  type: SET_MESSAGE_AND_STATE,
+  message,
+  state,
+});
 
 export default function (state = defaultToast, action) {
   const newState = {...state};
