@@ -3,8 +3,9 @@
 
 $color-solitude: #F5F7F8;
 $color-cerise: #D8276C;
-$color-warn: #f5e12d;
+$color-warn: #e8d20f;
 $color-success: #59ca63;
+$color-email-bg: #e7e7e7;
 
 $color-red: #f44336;
 $color-white: #FFFFFF;
@@ -82,6 +83,21 @@ body {
 /* When moving the mouse over the close button */
 .closebtn:hover {
   color: black;
+}
+
+.home-content-samples {
+  @include flex(row, center, flex-start);
+  flex-wrap: wrap;
+}
+
+.template-preview-inner {
+  width: 30vw;
+  height: 30vh;
+  overflow: hidden;
+  border: 4px solid $color-cerise;
+  border-radius: 3px;
+  margin: 5px;
+  background-color: $color-email-bg;
 }
 
 @import './styles/nav.scss';

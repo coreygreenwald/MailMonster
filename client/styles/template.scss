@@ -9,8 +9,8 @@
   }
   &-editor {
     width: 75%;
+    height: auto;
     padding: 10px;
-    
     &-controls {
       @include flex(row, space-between, space-between);
     }
